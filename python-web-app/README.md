@@ -1,0 +1,3 @@
+```
+A sample Django app .
+```
