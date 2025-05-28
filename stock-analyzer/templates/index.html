@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stock Market Analyzer</title>
+    <style>
+        body { font-family: Arial; margin: 40px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 8px; border: 1px solid #ccc; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <h1>Stock Market Analyzer</h1>
+    <form method="POST">
+        <input type="text" name="symbol" placeholder="Enter Stock Symbol (e.g., AAPL)" required>
+        <button type="submit">Get Data</button>
+    </form>
+
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    {% if stock %}
+    <h2>5-Day History for {{ stock.symbol }}</h2>
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Open</th>
+            <th>Close</th>
+            <th>High</th>
+            <th>Low</th>
+            <th>Volume</th>
+        </tr>
+        {% for row in stock.history %}
+        <tr>
+            <td>{{ row.Date.split(" ")[0] }}</td>
+            <td>{{ "%.2f"|format(row.Open) }}</td>
+            <td>{{ "%.2f"|format(row.Close) }}</td>
+            <td>{{ "%.2f"|format(row.High) }}</td>
+            <td>{{ "%.2f"|format(row.Low) }}</td>
+            <td>{{ row.Volume }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</body>
+</html>
