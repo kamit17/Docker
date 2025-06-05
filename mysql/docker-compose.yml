@@ -1,0 +1,21 @@
+services:
+  mysql_service:
+    image: mysql:8.0.23
+    container_name: mysql
+    restart: unless-stopped
+    ports:
+      - "3300:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=webhook
+    volumes:
+      - mysql-vol:/var/lib/mysql
+
+    networks:
+      - webhook
+
+networks:
+  webhook:
+
+volumes:
+  mysql-vol:
