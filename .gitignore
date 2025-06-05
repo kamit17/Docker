@@ -182,7 +182,7 @@ cython_debug/
 docker-compose.override.yml
 Dockerfile.*
 .dockerignore
-docker-compose*.yml
+#docker-compose*.yml
 __docker_cache__/
 **/.docker/
 
