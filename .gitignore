@@ -180,7 +180,6 @@ cython_debug/
 # Docker
 *.log
 docker-compose.override.yml
-Dockerfile.*
 .dockerignore
 #docker-compose*.yml
 __docker_cache__/
