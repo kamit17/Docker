@@ -1,0 +1,31 @@
+#Dockerfile
+
+#Make the base image configurable
+ARG BASE_IMAGE=python:3.9-slim
+FROM ${BASE_IMAGE}
+
+#Build the image as root user
+USER root
+
+#Run some bash commands to install packages
+RUN apt-get -qq update && \
+    apt-get -qq upgrade && \
+    apt-get -y autoclean && \
+    apt-get -y autoremove && \
+    rm -rf /var/lib/apt-get/lists/*
+
+# Create user "docker"
+RUN useradd -m docker && \
+    cp /root/.bashrc /home/docker/ && \
+    mkdir /home/docker/data && \
+    chown -R --from=root docker /home/docker
+ENV HOME /home/docker
+#This sets the default working directory when a container is launched from the image
+WORKDIR {HOME}/data
+#Run as docker user by default when the container starts up
+USER docker
+
+COPY entrypoint.sh $HOME/entrypoint.sh
+ENTRYPOINT ["/bin/bash", "/home/docker/entrypoint.sh"]
+CMD ["there"]
+
