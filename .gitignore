@@ -197,3 +197,4 @@ __docker_cache__/
 # Windows
 Thumbs.db
 ehthumbs.db
+wait-for-db.sh
