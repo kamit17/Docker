@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   mysql_service:
     image: mysql:8.0.23
@@ -6,11 +8,10 @@ services:
     ports:
       - "3300:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=webhook
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: webhook
     volumes:
       - mysql-vol:/var/lib/mysql
-
     networks:
       - webhook
 
