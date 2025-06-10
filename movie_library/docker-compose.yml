@@ -1,0 +1,17 @@
+services:
+  movies:
+    image: movies:v1
+    ports:
+      - "91:80"
+  anime:
+    image: anime:v1
+    ports:
+      - "92:80"
+  documentaries:
+    image: documentaries:v1
+    ports:
+      - "93:80"
+  webseries:
+    image: webseries:v1
+    ports:
+      - "94:80"
