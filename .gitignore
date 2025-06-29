@@ -198,3 +198,7 @@ __docker_cache__/
 Thumbs.db
 ehthumbs.db
 wait-for-db.sh
+
+#binaries
+.war
+.tar
