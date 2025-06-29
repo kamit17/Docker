@@ -1,0 +1,41 @@
+pipeline {
+    agent { label 'docker-build' }
+    environment {
+        RUNDECK_TAG  = 'offline-4.10.0'
+        POSTGRES_TAG = '15.2'
+        TAR_RUNDECK  = "rundeck-${RUNDECK_TAG}.tar"
+        TAR_PG       = "postgres-${POSTGRES_TAG}.tar"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps { checkout scm }
+        }
+
+        stage('Build & Save Images') {
+            steps {
+                sh "docker pull postgres:${POSTGRES_TAG}"
+                sh "docker build -t rundeck-offline:${RUNDECK_TAG} ."
+                sh "docker save postgres:${POSTGRES_TAG} -o ${TAR_PG}"
+                sh "docker save rundeck-offline:${RUNDECK_TAG} -o ${TAR_RUNDECK}"
+                stash includes: "${TAR_PG},${TAR_RUNDECK}", name: 'images'
+            }
+        }
+
+        stage('Deploy to Air-gapped Host') {
+            agent { label 'docker-offline' }
+            steps {
+                unstash 'images'
+                sh "docker load -i ${TAR_PG}"
+                sh "docker load -i ${TAR_RUNDECK}"
+                sh 'docker-compose down || true'
+                sh 'docker-compose up -d'
+            }
+        }
+    }
+
+    post {
+        success { echo 'Deployment complete — http://localhost:4440' }
+        failure { echo 'Build or deploy failed. Check console output.' }
+    }
+}
