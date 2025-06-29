@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15.2
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      POSTGRES_DB: rundeck
+      POSTGRES_USER: rundeck
+      POSTGRES_PASSWORD: rundeck
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
+  rundeck:
+    image: rundeck-4.10:latest
+    restart: unless-stopped
+    network_mode: host
+    depends_on:
+      - postgres
+    volumes:
+      - ./rundeck-config.properties:/rundeck/etc/rundeck-config.properties:ro
+
+volumes:
+  dbdata:
