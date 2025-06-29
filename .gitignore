@@ -200,5 +200,5 @@ ehthumbs.db
 wait-for-db.sh
 
 #binaries
-.war
-.tar
+*.war
+*.tar
