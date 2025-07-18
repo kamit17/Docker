@@ -1,21 +1,40 @@
 version: "3.8"
+
 services:
   jenkins:
-    image: ak6790435/jenkins-docker-maven:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: jenkins
-    user: root # start as root so apt-get works
-    entrypoint: ["/usr/local/bin/jenkins-init.sh"] # our init
+    user: root
+    entrypoint: ["/usr/local/bin/jenkins-init.sh"]
     ports:
       - "8080:8080"
       - "50000:50000"
     volumes:
       - jenkins_home:/var/jenkins_home
-      #- /usr/share/maven:/usr/share/maven:ro
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./jenkins-init.sh:/usr/local/bin/jenkins-init.sh:ro # mount our init
+      - ./jenkins-init.sh:/usr/local/bin/jenkins-init.sh:ro
       - ~/.ssh/jenkins_to_ec2:/home/jenkins/.ssh/id_ed25519:ro
       - ~/.ssh/jenkins_to_ec2.pub:/home/jenkins/.ssh/id_ed25519.pub:ro
+    networks:
+      - ci-network
+    restart: unless-stopped
+
+  sonarqube:
+    image: sonarqube:lts
+    container_name: sonarqube
+    ports:
+      - "9000:9000"
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    networks:
+      - ci-network
     restart: unless-stopped
 
 volumes:
   jenkins_home:
+
+networks:
+  ci-network:
+    driver: bridge
