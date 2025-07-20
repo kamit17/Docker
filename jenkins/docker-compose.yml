@@ -28,6 +28,10 @@ services:
       - "9000:9000"
     environment:
       - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
     networks:
       - ci-network
     restart: unless-stopped
@@ -43,10 +47,25 @@ services:
       - ci-network
     restart: unless-stopped
 
+  tomcat:
+    build:
+      context: ./tomcat
+      dockerfile: Dockerfile.tomcat
+    container_name: tomcat
+    ports:
+      - "8088:8080"
+    environment:
+      - TZ=UTC
+    networks:
+      - ci-network
+    restart: unless-stopped
 
 volumes:
   jenkins_home:
   nexus-data:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
 
 networks:
   ci-network:

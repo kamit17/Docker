@@ -1,0 +1,5 @@
+<Context privileged="true" antiResourceLocking="false">
+	  <!-- Remove IP restriction -->
+	  <Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="^.*$" />
+  </Context>
+  <!-- Access restrictions removed for deployment -->
