@@ -1,5 +1,4 @@
-'''
-
+```
 1. List all running containers
 docker ps
 
@@ -47,8 +46,7 @@ docker run <image_name>
 
 16. Delete container on exited status
 docker run --rm <container>
-
-# The --rm option removes the filesystem of the container once it is stopped or when the container exits automatically
+The --rm option removes the filesystem of the container once it is stopped or when the container exits automatically
 
 17. Run container in detached modes
 docker run -d <image_name>
