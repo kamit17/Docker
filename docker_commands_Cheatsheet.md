@@ -107,7 +107,6 @@ docker run --env-file <path_to_the_file> --name <container_name> <image_name>
 34. Docker image commands
 1)List all images
 docker images
-
 2) List all images including dangling images
 docker images -a
 3)list image id's.
@@ -120,5 +119,9 @@ docker build -f </path/to/dockerfilename>  -t <image_name> .
 docker build -t <image_name>:<tag or version> .
 6) Build image using custom-named Dockerfile
 docker build -f <custom_docker_file_name> -t <image_name> .
+7) save image as tar
+docker save imageName > newimagename.tar
+8) load the image
+docker load -i newimagename.tar
 
 To be continued....
