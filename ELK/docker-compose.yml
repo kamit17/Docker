@@ -1,0 +1,104 @@
+version: "3.8"
+services:
+  elasticsearch-master:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+    container_name: es-master
+    environment:
+      - node.name=es-master
+      - node.roles=master
+      - discovery.seed_hosts=es-master,es-coord,es-data1,es-data2
+      - cluster.initial_master_nodes=es-master
+      - cluster.name=elk-cluster
+      - network.host=0.0.0.0
+      - path.data=/custom/es-master/data
+      - path.logs=/custom/es-master/logs
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    volumes:
+      - ./es-master-data:/custom/es-master/data
+      - ./es-master-logs:/custom/es-master/logs
+    ports:
+      - 9200:9200
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  elasticsearch-coord:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+    container_name: es-coord
+    environment:
+      - node.name=es-coord
+      - node.roles=[]
+      - discovery.seed_hosts=es-master,es-coord,es-data1,es-data2
+      - cluster.name=elk-cluster
+      - network.host=0.0.0.0
+      - path.data=/custom/es-coord/data
+      - path.logs=/custom/es-coord/logs
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    volumes:
+      - ./es-coord-data:/custom/es-coord/data
+      - ./es-coord-logs:/custom/es-coord/logs
+
+  elasticsearch-data1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+    container_name: es-data1
+    environment:
+      - node.name=es-data1
+      - node.roles=data
+      - discovery.seed_hosts=es-master,es-coord,es-data1,es-data2
+      - cluster.name=elk-cluster
+      - network.host=0.0.0.0
+      - path.data=/custom/es-data1/data
+      - path.logs=/custom/es-data1/logs
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    volumes:
+      - ./es-data1-data:/custom/es-data1/data
+      - ./es-data1-logs:/custom/es-data1/logs
+
+  elasticsearch-data2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+    container_name: es-data2
+    environment:
+      - node.name=es-data2
+      - node.roles=data
+      - discovery.seed_hosts=es-master,es-coord,es-data1,es-data2
+      - cluster.name=elk-cluster
+      - network.host=0.0.0.0
+      - path.data=/custom/es-data2/data
+      - path.logs=/custom/es-data2/logs
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    volumes:
+      - ./es-data2-data:/custom/es-data2/data
+      - ./es-data2-logs:/custom/es-data2/logs
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.12.0
+    container_name: logstash
+    volumes:
+      - ./logstash/config:/usr/share/logstash/config:ro
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - "5044:5044"
+      - "9600:9600"
+    depends_on:
+      - elasticsearch-master
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.12.0
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://es-coord:9200
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch-coord
+
+volumes:
+  es-master-data:
+  es-master-logs:
+  es-coord-data:
+  es-coord-logs:
+  es-data1-data:
+  es-data1-logs:
+  es-data2-data:
+  es-data2-logs:
